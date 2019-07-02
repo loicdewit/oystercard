@@ -1,6 +1,6 @@
 class Oystercard
 
-  attr_reader :balance, :entry_station
+  attr_reader :balance, :entry_station, :journey_history, :current_journey
 
   LIMIT = 90
   MINIMUM = 1
@@ -15,7 +15,8 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @entry_station
+    @journey_history = []
+    @current_journey = {}
   end
 
   def top_up(load)
@@ -28,19 +29,25 @@ class Oystercard
   end
 
   def in_journey?
-    @entry_station != nil
+    @current_journey[:begin] != nil && @current_journey[:end] == nil
   end
 
   def touch_in(station)
     fail "Your Oystercard has less than £#{MINIMUM}" if limit_reached?
-    @entry_station = station
+    @current_journey = {begin: station}
   end
 
-  def touch_out(amount)
+  def touch_out(amount, station)
     deduct(amount)
+    update_journey_history(station)
   end
 
   private
+
+  def update_journey_history(station)
+    @current_journey[:end] = station
+    @journey_history << @current_journey
+  end
 
   def limit_exceeded?(load)
     load > LIMIT - @balance
