@@ -5,9 +5,6 @@ RSpec.describe Oystercard do
     it 'Sets balance to zero' do
       expect(subject.balance).to eq(0)
     end
-    it 'it initialises in_journey to false' do
-      expect(subject.in_journey?).to eq false
-    end
     it 'it initialises journey_history' do
       expect(subject.journey_history).to eq []
     end
@@ -31,28 +28,19 @@ RSpec.describe Oystercard do
   end
 
   describe '#touch_in' do
-    it 'Sets in_journey' do
-      subject.top_up(subject.minimum)
-      subject.touch_in("Station")
-      expect(subject.in_journey?).to eq true
-    end
     it "raises error if balance is less than £1" do
-      expect { subject.touch_in("Station") }.to raise_error "Your Oystercard has less than £#{subject.minimum}"
+      station = double(:station, name: "Station", zone: "1")
+      expect { subject.touch_in(station) }.to raise_error "Your Oystercard has less than £#{subject.minimum}"
     end
     it "it pushes the entry station to current journey" do
+      station = double(:station, name: "Victoria", zone: "1")
       subject.top_up(5)
-      subject.touch_in("Victoria")
-      expect(subject.current_journey[:begin]).to eq "Victoria"
+      subject.touch_in(station)
+      expect(subject.current_journey).to be_a(Journey)
     end
   end
 
   describe '#touch_out' do
-    it 'Sets in_journey to false' do
-      subject.top_up(5)
-      subject.touch_in("Victoria")
-      subject.touch_out(5, "Algate East")
-      expect(subject.in_journey?).to eq false
-    end
     it 'Deducts correct amount' do
       subject.top_up(5)
       subject.touch_in("Victoria")
