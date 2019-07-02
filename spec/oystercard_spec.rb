@@ -72,4 +72,13 @@ RSpec.describe Oystercard do
       expect(subject.journey_history.pop).to eq hash
     end
   end
+
+  describe '#show_journey_history' do
+    it "shows the journey history" do
+      subject.top_up(5)
+      subject.touch_in("Victoria")
+      subject.touch_out(5, "Algate East")
+      expect{ subject.show_journey_history }.to output("Victoria --> Algate East\n").to_stdout
+    end
+  end
 end

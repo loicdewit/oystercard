@@ -42,6 +42,12 @@ class Oystercard
     update_journey_history(station)
   end
 
+  def show_journey_history
+    @journey_history.each do |journey|
+      puts "#{journey[:begin]} --> #{journey[:end]}"
+    end
+  end
+
   private
 
   def update_journey_history(station)
