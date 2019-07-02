@@ -31,9 +31,10 @@ RSpec.describe Oystercard do
   end
 
   describe '#touch_in' do
-    it 'Sets in_journey to true' do
+    it 'Sets in_journey' do
       subject.top_up(subject.minimum)
-      expect(subject.touch_in("Station")).to eq true
+      subject.touch_in("Station")
+      expect(subject.in_journey?).to eq true
     end
     it "raises error if balance is less than £1" do
       expect { subject.touch_in("Station") }.to raise_error "Your Oystercard has less than £#{subject.minimum}"
@@ -47,7 +48,8 @@ RSpec.describe Oystercard do
 
   describe '#touch_out' do
     it 'Sets in_journey to false' do
-      expect(subject.touch_out(5)).to eq false
+      subject.touch_out(5)
+      expect(subject.in_journey?).to eq false
     end
     it 'Deducts correct amount' do
       expect {subject.touch_out(5)}. to change{subject.balance}.by(-5)
