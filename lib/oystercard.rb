@@ -30,10 +30,10 @@ class Oystercard
     @balance -= amount
   end
 
-  def touch_in(station)
+  def touch_in(station, journey = Journey.new)
     fail "Your Oystercard has less than £#{MINIMUM}" if limit_reached?
     @current_journey = Journey.new
-    @current_journey.add_entry_station
+    @current_journey.add_entry_station(station)
   end
 
   def touch_out(station)

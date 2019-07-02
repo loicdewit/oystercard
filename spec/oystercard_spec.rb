@@ -34,8 +34,10 @@ RSpec.describe Oystercard do
     end
     it "it pushes the entry station to current journey" do
       station = double(:station, name: "Victoria", zone: "1")
+      journey = double(:journey)
+      allow(journey).to receive(:add_entry_station).and_return(false)
       subject.top_up(5)
-      subject.touch_in(station)
+      subject.touch_in(station, journey)
       expect(subject.current_journey).to be_a(Journey)
     end
   end
@@ -43,7 +45,7 @@ RSpec.describe Oystercard do
   describe '#touch_out' do
     it 'Deducts correct amount' do
       subject.top_up(5)
-      subject.touch_in("Victoria")
+      subject.touch_in(station, journey)
       expect {subject.touch_out(5, "Algate East")}. to change{subject.balance}.by(-5)
     end
     it "it stores the exit station" do
