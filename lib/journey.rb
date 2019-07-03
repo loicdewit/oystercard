@@ -28,16 +28,3 @@ attr_reader :journey, :journey_complete
   end
 
 end
-
-
-# @current_journey
-# touch_in - @current_journey = {begin: station}
-#
-# def in_journey?
-#   @current_journey[:begin] != nil && @current_journey[:end] == nil
-# end
-#
-# def update_journey_history(station)
-#   @current_journey[:end] = station
-#   @journey_history << @current_journey
-# end
