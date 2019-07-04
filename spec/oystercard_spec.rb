@@ -5,9 +5,6 @@ RSpec.describe Oystercard do
     it 'Sets balance to zero' do
       expect(subject.balance).to eq(0)
     end
-    it 'it initialises journey_history' do
-      expect(subject.journey_history).to eq []
-    end
   end
   describe '#top_up' do
     it "adds money to your card" do
@@ -32,14 +29,6 @@ RSpec.describe Oystercard do
       station = double(:station, name: "Station", zone: "1")
       expect { subject.touch_in(station) }.to raise_error "Your Oystercard has less than £#{subject.minimum}"
     end
-    it "it starts new journey, and add entry station" do
-      station = double(:station, name: "Victoria", zone: "1")
-      journey = double(:journey)
-      allow(journey).to receive(:add_entry_station).and_return(false)
-      subject.top_up(5)
-      subject.touch_in(station, journey)
-      expect(subject.current_journey).to eq(journey)
-    end
   end
 
   describe '#touch_out' do
@@ -52,37 +41,8 @@ RSpec.describe Oystercard do
       allow(journey).to receive(:add_exit_station)
       allow(journey).to receive(:journey)
       subject.top_up(5)
-      subject.touch_in(station, journey)
+      subject.touch_in(station)
       expect {subject.touch_out(station1)}. to change{subject.balance}.by(-1)
-    end
-    it "it stores the whole journey in journey history" do
-      station = double(:station, name: "Victoria", zone: "1")
-      station1 = double(:station, name: "Aldgate East", zone: "1")
-      journey = double(:journey)
-      allow(journey).to receive(:add_entry_station).and_return(false)
-      allow(journey).to receive(:fare).and_return(1)
-      allow(journey).to receive(:add_exit_station)
-      allow(journey).to receive(:journey).and_return(journey)
-      subject.top_up(5)
-      subject.touch_in(station, journey)
-      subject.touch_out(station1)
-      expect(subject.journey_history).to eq [journey]
-    end
-  end
-
-  describe '#show_journey_history' do
-    it "shows the journey history" do
-      station = double(:station, name: "Victoria", zone: "1")
-      station1 = double(:station, name: "Aldgate East", zone: "1")
-      journey = double(:journey)
-      allow(journey).to receive(:add_entry_station).and_return(false)
-      allow(journey).to receive(:fare).and_return(1)
-      allow(journey).to receive(:add_exit_station)
-      allow(journey).to receive(:journey).and_return({begin: "Victoria", end: "Aldgate East"})
-      subject.top_up(5)
-      subject.touch_in(station, journey)
-      subject.touch_out(station1)
-      expect { subject.show_journey_history }.to output("Victoria --> Aldgate East\n").to_stdout
     end
   end
 end

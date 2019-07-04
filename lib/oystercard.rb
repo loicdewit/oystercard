@@ -1,12 +1,18 @@
 require 'station'
 require 'journey'
+require 'journey_log'
 
 class Oystercard
 
-  attr_reader :balance, :entry_station, :journey_history, :current_journey
+  attr_reader :balance, :journey_log
 
   LIMIT = 90
   MINIMUM = 1
+
+  def initialize
+    @balance = 0
+    @journey_log = JourneyLog.new
+  end
 
   def limit
     LIMIT
@@ -14,11 +20,6 @@ class Oystercard
 
   def minimum
     MINIMUM
-  end
-
-  def initialize
-    @balance = 0
-    @journey_history = []
   end
 
   def top_up(load)
@@ -30,29 +31,17 @@ class Oystercard
     @balance -= amount
   end
 
-  def touch_in(station, journey = Journey.new)
+  def touch_in(station)
     fail "Your Oystercard has less than £#{MINIMUM}" if limit_reached?
-    @current_journey = journey
-    @current_journey.add_entry_station(station)
+    @journey_log.start(station)
   end
 
   def touch_out(station)
-    deduct(@current_journey.fare)
-    @current_journey.add_exit_station(station)
-    update_journey_history
-  end
-
-  def show_journey_history
-    @journey_history.each do |journey|
-      puts "#{journey[:begin]} --> #{journey[:end]}"
-    end
+    journey_log.finish(station)
+    deduct(@journey_log.calc_fare)
   end
 
   private
-
-  def update_journey_history
-    @journey_history << @current_journey.journey
-  end
 
   def limit_exceeded?(load)
     load > LIMIT - @balance

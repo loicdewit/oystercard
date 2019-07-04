@@ -12,5 +12,4 @@ RSpec.describe Station do
       expect(victoria.name).to eq 'Victoria'
     end
   end
-  
 end

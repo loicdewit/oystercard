@@ -26,5 +26,4 @@ attr_reader :journey, :journey_complete
   def fare_check
     @journey[:begin] != nil && @journey[:end] != nil
   end
-
 end
