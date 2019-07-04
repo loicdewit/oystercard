@@ -19,11 +19,22 @@ attr_reader :journey, :journey_complete
   end
 
   def fare
-    return Oystercard::MINIMUM if fare_check
-    return 6
+    if fare_check
+      return compute_fare()
+    else
+      return Oystercard::PENALTY
+    end
   end
 
   def fare_check
     @journey[:begin] != nil && @journey[:end] != nil
+  end
+
+  private
+
+  def compute_fare
+    start_zone = @journey[:begin].zone
+    end_zone = @journey[:end].zone
+    fare = Oystercard::MINIMUM + (start_zone - end_zone).abs
   end
 end

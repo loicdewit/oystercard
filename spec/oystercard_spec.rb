@@ -33,8 +33,8 @@ RSpec.describe Oystercard do
 
   describe '#touch_out' do
     it 'Deducts correct amount' do
-      station = double(:station, name: "Victoria", zone: "1")
-      station1 = double(:station, name: "Aldgate East", zone: "1")
+      station = double(:station, name: "Victoria", zone: 1)
+      station1 = double(:station, name: "Aldgate East", zone: 1)
       journey = double(:journey)
       allow(journey).to receive(:add_entry_station).and_return(false)
       allow(journey).to receive(:fare).and_return(1)

@@ -8,6 +8,7 @@ class Oystercard
 
   LIMIT = 90
   MINIMUM = 1
+  PENALTY = 6
 
   def initialize
     @balance = 0
